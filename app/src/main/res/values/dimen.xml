@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="image_height">90dp</dimen>
+    <dimen name="image_width">90dp</dimen>
+    <dimen name="margin_start_for_text">20dp</dimen>
+    <dimen name="margin_top_for_text">15dp</dimen>
+    <dimen name="normal_text_size">20sp</dimen>
+    <dimen name="min_text_size">15sp</dimen>
+
+
+</resources>
