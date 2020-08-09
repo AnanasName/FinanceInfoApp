@@ -30,6 +30,7 @@ public class CompanyApiClient {
     private static CompanyApiClient instance;
     private MutableLiveData<List<CompanyInfo>> mCompanies;
     private RetrieveCompanyRunnable mRetrieveCompanyRunnable;
+    private MutableLiveData<Boolean> updating;
 
     public static CompanyApiClient getInstance() {
         if (instance == null) {
@@ -40,10 +41,15 @@ public class CompanyApiClient {
 
     private CompanyApiClient() {
         mCompanies = new MutableLiveData<>();
+        updating = new MutableLiveData<>();
     }
 
     public LiveData<List<CompanyInfo>> getCompanies() {
         return mCompanies;
+    }
+
+    public LiveData<Boolean> isUpdating(){
+        return updating;
     }
 
     public void searchCompaniesApi(String symbols) {
@@ -73,6 +79,7 @@ public class CompanyApiClient {
 
         @Override
         public void run() {
+            updating.postValue(true);
             List<CompanyInfo> companyInfos = new ArrayList<>();
             try {
                 Response<CompanySearchResponse> response = getCompanies(symbols).execute();
@@ -95,15 +102,19 @@ public class CompanyApiClient {
                         companyInfos.add(info);
                     }
 
-                    //mCompanies.postValue(companyInfos);
+                    updating.postValue(false);
+                    mCompanies.postValue(companyInfos);
                 }else{
                     String error = response.errorBody().string();
                     Log.e(TAG, "run:");
+                    updating.postValue(false);
+                    mCompanies.postValue(null);
                 }
             } catch (IOException io) {
                 io.printStackTrace();
+                updating.postValue(false);
+                mCompanies.postValue(null);
             }
-            mCompanies.postValue(companyInfos);
         }
 
         private Call<CompanySearchResponse> getCompanies(String symbols) {

@@ -31,4 +31,8 @@ public class CompanyRepository {
     public void searchCompanies(String symbols){
         mCompanyApiClient.searchCompaniesApi(symbols);
     }
+
+    public LiveData<Boolean> isUpdating() {
+        return mCompanyApiClient.isUpdating();
+    }
 }

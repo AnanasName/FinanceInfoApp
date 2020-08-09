@@ -34,5 +34,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <include
+        layout="@layout/layout_dotted_bar"
+        android:id="@+id/main_dotted_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

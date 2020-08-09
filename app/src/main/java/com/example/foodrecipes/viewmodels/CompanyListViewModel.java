@@ -25,4 +25,8 @@ public class CompanyListViewModel extends ViewModel {
         mCompanyRepository.searchCompanies(symbols);
     }
 
+    public LiveData<Boolean> isUpdating(){
+        return mCompanyRepository.isUpdating();
+    }
+
 }

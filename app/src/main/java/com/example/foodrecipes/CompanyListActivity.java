@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodrecipes.adapters.CompaniesRecyclerAdapter;
 import com.example.foodrecipes.adapters.OnCompanyListener;
 import com.example.foodrecipes.model.CompanyInfo;
+import com.example.foodrecipes.util.HorizontalDottedProgress;
 import com.example.foodrecipes.util.Testing;
 import com.example.foodrecipes.viewmodels.CompanyListViewModel;
 
@@ -23,6 +25,7 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
     private CompanyListViewModel mCompanyListViewModel;
     private RecyclerView mRecyclerView;
     private CompaniesRecyclerAdapter mAdapter;
+    private RelativeLayout mDottedProgressBar;
 
 
     @Override
@@ -32,6 +35,7 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
 
         mCompanyListViewModel = ViewModelProviders.of(this).get(CompanyListViewModel.class);
         mRecyclerView = findViewById(R.id.main_companies_list);
+        mDottedProgressBar = findViewById(R.id.main_dotted_progress_bar);
 
 
         initRecyclerView();
@@ -46,6 +50,21 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
                 if (companyInfos != null){
                     //Testing.printRecipes(companyInfos, "test companies");
                     mAdapter.setCompanies(companyInfos);
+                }
+            }
+        });
+
+        mCompanyListViewModel.isUpdating().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    Log.d("Update", aBoolean.toString());
+                    mRecyclerView.setVisibility(View.GONE);
+                    mDottedProgressBar.setVisibility(View.VISIBLE);
+                }else{
+                    Log.d("Update", aBoolean.toString());
+                    mDottedProgressBar.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
                 }
             }
         });
