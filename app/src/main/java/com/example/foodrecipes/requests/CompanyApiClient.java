@@ -95,9 +95,13 @@ public class CompanyApiClient {
                         info.setName(label.getName());
                         Log.d(TAG, "run: " + label.getSymbol() + " " + label.getName());
                         Response<CompanyLogoResponse> imageResponse = getImageUrl(label.getSymbol()).execute();
-                        if (imageResponse.body().getUrl() != null) {
+                        if (label.getSymbol().indexOf(".") != -1){
+                            info.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/IBML.png");
+                        }else if (imageResponse.body().getUrl() != null) {
                             info.setUrlOfSymbol((imageResponse.body()).getUrl());
                             Log.d(TAG,"run: " + (imageResponse.body()).getUrl());
+                        } else{
+                            info.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/IBML.png");
                         }
                         companyInfos.add(info);
                     }
