@@ -17,6 +17,7 @@ import com.example.foodrecipes.adapters.OnCompanyListener;
 import com.example.foodrecipes.model.CompanyInfo;
 import com.example.foodrecipes.util.HorizontalDottedProgress;
 import com.example.foodrecipes.util.Testing;
+import com.example.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.example.foodrecipes.viewmodels.CompanyListViewModel;
 
 import java.util.List;
@@ -71,6 +72,8 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
     }
 
     private void initRecyclerView(){
+        VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(30);
+        mRecyclerView.addItemDecoration(itemDecorator);
         mAdapter = new CompaniesRecyclerAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
