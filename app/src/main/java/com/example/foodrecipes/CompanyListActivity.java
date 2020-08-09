@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +36,7 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
 
         initRecyclerView();
         subscribeObservers();
-        testRetrofitRequest();
+        initSearchView();
     }
 
     private void subscribeObservers(){
@@ -56,10 +57,6 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void testRetrofitRequest(){
-        searchCompaniesApi("IBM");
-    }
-
     private void searchCompaniesApi(String symbols){
         mCompanyListViewModel.searchCompaniesApi(symbols);
     }
@@ -67,6 +64,22 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
     @Override
     public void onCompanyClick(int position) {
 
+    }
+
+    private void initSearchView(){
+        final SearchView searchView = findViewById(R.id.main_search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchCompaniesApi(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     public void printData(View view) {
