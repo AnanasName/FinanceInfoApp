@@ -1,5 +1,6 @@
 package com.example.foodrecipes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -85,7 +86,9 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
 
     @Override
     public void onCompanyClick(int position) {
-
+        Intent intent = new Intent(this, CompanyInfoActivity.class);
+        intent.putExtra("companyInfo", mAdapter.getSelectedCompany(position));
+        startActivity(intent);
     }
 
     private void initSearchView(){

@@ -59,4 +59,13 @@ public class CompaniesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
         mCompanyInfos = companyInfos;
         notifyDataSetChanged();
     }
+
+    public CompanyInfo getSelectedCompany(int position){
+        if (mCompanyInfos != null){
+            if (mCompanyInfos.size() > 0){
+                return mCompanyInfos.get(position);
+            }
+        }
+        return null;
+    }
 }
