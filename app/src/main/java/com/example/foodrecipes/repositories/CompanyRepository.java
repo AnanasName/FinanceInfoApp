@@ -36,6 +36,10 @@ public class CompanyRepository {
         return mCompanyApiClient.getCompany();
     }
 
+    public LiveData<Boolean> isCompanyRequestTimeout(){
+        return mCompanyApiClient.isCompanyRequestTimeout();
+    }
+
     public void getCompanyInfo(String symbol){
         mCompanyApiClient.getCompanyInfo(symbol);
     }

@@ -1,6 +1,7 @@
 package com.example.foodrecipes.requests;
 
 import com.example.foodrecipes.requests.responses.CompanyLogoResponse;
+import com.example.foodrecipes.requests.responses.PriceResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,4 +15,8 @@ public interface ImageApi {
             @Path("symbol") String symbol,
             @Query("token") String token
     );
+
+    @GET("/stable/stock/{symbol}/book")
+    Call<PriceResponse> getPrice(@Path("symbol") String symbol,
+                                 @Query("token") String token);
 }

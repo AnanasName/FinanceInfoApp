@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -24,7 +26,7 @@ public class CompanyInfoActivity extends AppCompatActivity {
 
     //UI components
     private ScrollView mScrollView;
-    private AppCompatImageView mLogoImageView;
+    private ImageView mLogoImageView;
     private TextView mCompanyNameTextView, mCompanySymbolTextView,
     mCompanyAnalystTargetPrice, mCompanyCountryTextView,
     mCompanySectorTextView, mCompanyDividendPerShareTextView,
@@ -32,6 +34,7 @@ public class CompanyInfoActivity extends AppCompatActivity {
     private RelativeLayout mDottedProgressBar;
     private CompanyInfo mCompanyInfo;
     private RelativeLayout mContainer;
+    private TextView mCompanyPriceTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class CompanyInfoActivity extends AppCompatActivity {
         mCompanyDesription = findViewById(R.id.company_info_description_text_view);
         mDottedProgressBar = findViewById(R.id.company_info_dotted_progress_bar);
         mContainer = findViewById(R.id.company_info_container);
+        mCompanyPriceTextView = findViewById(R.id.company_info_price_text_view);
 
         mCompanyInfoViewModel = ViewModelProviders.of(this).get(CompanyInfoViewModel.class);
         subscribeObservers();
@@ -87,6 +91,15 @@ public class CompanyInfoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mCompanyInfoViewModel.isCompanyRequestTimeout().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    Log.d("CompanyInfoActivity", "connect error");
+                }
+            }
+        });
     }
 
     private void setProperties(CompanyInfo companyInfo){
@@ -95,7 +108,7 @@ public class CompanyInfoActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .setDefaultRequestOptions(requestOptions)
-                .load(mCompanyInfo.getUrlOfSymbol())
+                .load(((CompanyInfo)(mCompanyInfo)).getUrlOfSymbol())
                 .into(mLogoImageView);
         mCompanyDesription.setText(companyInfo.getDescription());
         mCompanyNameTextView.setText(mCompanyInfo.getName());
@@ -106,5 +119,6 @@ public class CompanyInfoActivity extends AppCompatActivity {
         mCompanySectorTextView.setText(new StringBuilder().append("Sector: ").append(companyInfo.getSector()).toString());
         mCompanyDividendDate.setText(new StringBuilder().append("Dividend date: ").append(companyInfo.getDividendDate()).toString());
         mCompanyDividendPerShareTextView.setText(new StringBuilder().append("Dividend per share: ").append(companyInfo.getDividendPerShare()).toString());
+        mCompanyPriceTextView.setText(new StringBuilder().append("Price: ").append(companyInfo.getPrice()).toString());
     }
 }

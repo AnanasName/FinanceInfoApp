@@ -14,6 +14,6 @@ public class Constants {
 
     public static final String SEARCH_FUNCTION = "SYMBOL_SEARCH";
 
-    public static final int NETWORK_TIMEOUT = 20000;
+    public static final int NETWORK_TIMEOUT = 15000;
 
 }

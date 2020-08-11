@@ -11,6 +11,7 @@ import com.example.foodrecipes.model.CompanySearchObject;
 import com.example.foodrecipes.requests.responses.CompanyInfoResponse;
 import com.example.foodrecipes.requests.responses.CompanyLogoResponse;
 import com.example.foodrecipes.requests.responses.CompanySearchResponse;
+import com.example.foodrecipes.requests.responses.PriceResponse;
 import com.example.foodrecipes.util.Constants;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class CompanyApiClient {
     private RetrieveCompanyRunnable mRetrieveCompanyRunnable;
     private MutableLiveData<Boolean> updating;
     private MutableLiveData<CompanyInfo> mCompany;
+    private MutableLiveData<Boolean> mCompanyRequestTimeout = new MutableLiveData<>();
 
     public static CompanyApiClient getInstance() {
         if (instance == null) {
@@ -59,6 +61,10 @@ public class CompanyApiClient {
 
     public LiveData<Boolean> isUpdating() {
         return updating;
+    }
+
+    public LiveData<Boolean> isCompanyRequestTimeout(){
+        return mCompanyRequestTimeout;
     }
 
     public void searchCompaniesApi(String symbols) {
@@ -86,6 +92,7 @@ public class CompanyApiClient {
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
             public void run() {
+                mCompanyRequestTimeout.postValue(true);
                 handler.cancel(true);
             }
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -127,7 +134,9 @@ public class CompanyApiClient {
                         } else {
                             info.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/IBML.png");
                         }
-                        companyInfos.add(info);
+                        if (label.getSymbol().indexOf(".") == -1) {
+                            companyInfos.add(info);
+                        }
                     }
 
                     updating.postValue(false);
@@ -183,6 +192,8 @@ public class CompanyApiClient {
                     return;
                 }
                 if (response.code() == 200) {
+                    Response<PriceResponse> priceResponse = getPrice(symbols).execute();
+                    companyInfo.setPrice(priceResponse.body().getPrice());
                     companyInfo.setDescription(response.body().getDescription());
                     companyInfo.setAnalystTargetPrice(response.body().getAnalystTargetPrice());
                     companyInfo.setCountry(response.body().getCountry());
@@ -194,16 +205,19 @@ public class CompanyApiClient {
                     //TODO Добавить цену
 
                     updating.postValue(false);
+                    mCompanyRequestTimeout.postValue(false);
                     mCompany.postValue(companyInfo);
                 } else {
                     String error = response.errorBody().string();
                     Log.e(TAG, "run:");
                     updating.postValue(false);
+                    mCompanyRequestTimeout.postValue(false);
                     mCompany.postValue(null);
                 }
             } catch (IOException io) {
                 io.printStackTrace();
                 updating.postValue(false);
+                mCompanyRequestTimeout.postValue(false);
                 mCompany.postValue(null);
             }
         }
@@ -211,6 +225,12 @@ public class CompanyApiClient {
         private Call<CompanyInfoResponse> getCompany(String symbols) {
             return ServiceGenerator.getInfoApi().getInfo(
                     Constants.OVERVIEW_FUNCTION, symbols, Constants.API_KEY_FOR_INFO
+            );
+        }
+
+        private Call<PriceResponse> getPrice(String symbols) {
+            return ServiceGenerator.getImageApi().getPrice(
+                    symbols, Constants.API_KEY_FOR_IMAGE
             );
         }
 

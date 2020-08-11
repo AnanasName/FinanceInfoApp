@@ -17,7 +17,7 @@
             android:id="@+id/company_info_container">
 
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/company_info_logo_image_view"
                 android:layout_width="@dimen/image_width"
                 android:layout_height="@dimen/image_height"
@@ -113,8 +113,9 @@
             layout="@layout/layout_dotted_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="800dp"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
 
     </RelativeLayout>
