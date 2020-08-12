@@ -1,13 +1,10 @@
 package com.example.foodrecipes;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -15,8 +12,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.example.foodrecipes.adapters.CompanyViewHolder;
 import com.example.foodrecipes.model.CompanyInfo;
 import com.example.foodrecipes.viewmodels.CompanyInfoViewModel;
 
@@ -28,13 +23,14 @@ public class CompanyInfoActivity extends AppCompatActivity {
     private ScrollView mScrollView;
     private ImageView mLogoImageView;
     private TextView mCompanyNameTextView, mCompanySymbolTextView,
-    mCompanyAnalystTargetPrice, mCompanyCountryTextView,
-    mCompanySectorTextView, mCompanyDividendPerShareTextView,
-    mCompanyDividendDate, mCompanyAssetType, mCompanyDesription;
+            mCompanyAnalystTargetPrice, mCompanyCountryTextView,
+            mCompanySectorTextView, mCompanyDividendPerShareTextView,
+            mCompanyDividendDate, mCompanyAssetType, mCompanyDesription;
     private RelativeLayout mDottedProgressBar;
     private CompanyInfo mCompanyInfo;
     private RelativeLayout mContainer;
     private TextView mCompanyPriceTextView;
+    private RelativeLayout mContainerForErrors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +51,7 @@ public class CompanyInfoActivity extends AppCompatActivity {
         mDottedProgressBar = findViewById(R.id.company_info_dotted_progress_bar);
         mContainer = findViewById(R.id.company_info_container);
         mCompanyPriceTextView = findViewById(R.id.company_info_price_text_view);
+        mContainerForErrors = findViewById(R.id.company_info_container_for_error);
 
         mCompanyInfoViewModel = ViewModelProviders.of(this).get(CompanyInfoViewModel.class);
         subscribeObservers();
@@ -63,17 +60,18 @@ public class CompanyInfoActivity extends AppCompatActivity {
         mCompanyInfoViewModel.getCompanyInfo(mCompanyInfo.getSymbol());
     }
 
-    private void getIncomingIntent(){
-        if (getIntent().hasExtra("companyInfo")){
+    private void getIncomingIntent() {
+        if (getIntent().hasExtra("companyInfo")) {
             mCompanyInfo = getIntent().getParcelableExtra("companyInfo");
         }
     }
 
-    private void subscribeObservers(){
+    private void subscribeObservers() {
         mCompanyInfoViewModel.getCompany().observe(this, new Observer<CompanyInfo>() {
             @Override
             public void onChanged(CompanyInfo companyInfo) {
                 if (companyInfo != null) {
+                    companyInfo.setUrlOfSymbol(mCompanyInfo.getUrlOfSymbol());
                     setProperties(companyInfo);
                 }
             }
@@ -82,43 +80,95 @@ public class CompanyInfoActivity extends AppCompatActivity {
         mCompanyInfoViewModel.isUpdating().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
+                if (aBoolean) {
                     mContainer.setVisibility(View.GONE);
                     mDottedProgressBar.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mDottedProgressBar.setVisibility(View.GONE);
-                    mContainer.setVisibility(View.VISIBLE);
+                    //mContainer.setVisibility(View.VISIBLE);
                 }
             }
         });
 
-        mCompanyInfoViewModel.isCompanyRequestTimeout().observe(this, new Observer<Boolean>() {
+        mCompanyInfoViewModel.hasRetrieveError().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
-                    Log.d("CompanyInfoActivity", "connect error");
+                if (aBoolean) {
+                    displayErrorScreen();
                 }
             }
         });
     }
 
-    private void setProperties(CompanyInfo companyInfo){
-        RequestOptions requestOptions = new RequestOptions()
-                .placeholder(R.drawable.ic_launcher_background);
+    private void setProperties(CompanyInfo companyInfo) {
+        mContainer.setVisibility(View.VISIBLE);
 
         Glide.with(this)
-                .setDefaultRequestOptions(requestOptions)
-                .load(((CompanyInfo)(mCompanyInfo)).getUrlOfSymbol())
+                .load(companyInfo.getUrlOfSymbol())
+                .placeholder(R.drawable.ic_baseline_maximize_24)
+                .error(android.R.drawable.stat_notify_error)
                 .into(mLogoImageView);
-        mCompanyDesription.setText(companyInfo.getDescription());
+        if (companyInfo.getDescription() != null) {
+            mCompanyDesription.setText(companyInfo.getDescription());
+        } else {
+            mCompanyDesription.setText(new StringBuilder().append("Description: ").append("No information"));
+        }
+
         mCompanyNameTextView.setText(mCompanyInfo.getName());
         mCompanySymbolTextView.setText(mCompanyInfo.getSymbol());
-        mCompanyAnalystTargetPrice.setText(new StringBuilder().append("Ananlyst target price: ").append(companyInfo.getAnalystTargetPrice()).toString());
-        mCompanyAssetType.setText(new StringBuilder().append("Asset type: ").append(companyInfo.getAssetType()).toString());
-        mCompanyCountryTextView.setText(new StringBuilder().append("Country: ").append(companyInfo.getCountry()).toString());
-        mCompanySectorTextView.setText(new StringBuilder().append("Sector: ").append(companyInfo.getSector()).toString());
-        mCompanyDividendDate.setText(new StringBuilder().append("Dividend date: ").append(companyInfo.getDividendDate()).toString());
-        mCompanyDividendPerShareTextView.setText(new StringBuilder().append("Dividend per share: ").append(companyInfo.getDividendPerShare()).toString());
-        mCompanyPriceTextView.setText(new StringBuilder().append("Price: ").append(companyInfo.getPrice()).toString());
+
+        if (companyInfo.getAnalystTargetPrice() != null) {
+            mCompanyAnalystTargetPrice.setText(new StringBuilder().append("Analyst target price: ").append(companyInfo.getAnalystTargetPrice()));
+        } else {
+            mCompanyAnalystTargetPrice.setText(new StringBuilder().append("Analyst target price: ").append("No information"));
+        }
+
+        if (companyInfo.getAssetType() != null) {
+            mCompanyAssetType.setText(new StringBuilder().append("Asset type: ").append(companyInfo.getAssetType()));
+        } else {
+            mCompanyAssetType.setText(new StringBuilder().append("Asset type: ").append("No information"));
+        }
+
+        if (companyInfo.getCountry() != null) {
+            mCompanyCountryTextView.setText(new StringBuilder().append("Country: ").append(companyInfo.getCountry()));
+        } else {
+            mCompanyCountryTextView.setText(new StringBuilder().append("Country: ").append("No information"));
+        }
+
+        if (companyInfo.getSector() != null) {
+            mCompanySectorTextView.setText(new StringBuilder().append("Sector: ").append(companyInfo.getSector()));
+        } else {
+            mCompanySectorTextView.setText(new StringBuilder().append("Sector: ").append("No information"));
+        }
+
+        if (companyInfo.getDividendDate() != null) {
+            mCompanyDividendDate.setText(new StringBuilder().append("Dividend date: ").append(companyInfo.getDividendDate()));
+        } else {
+            mCompanyDividendDate.setText(new StringBuilder().append("Dividend date: ").append("No information"));
+        }
+
+        if (companyInfo.getDividendPerShare() != null) {
+            mCompanyDividendPerShareTextView.setText(new StringBuilder().append("Dividend per share: ").append(companyInfo.getDividendPerShare()));
+        } else {
+            mCompanyDividendPerShareTextView.setText(new StringBuilder().append("Dividend per share: ").append("No information"));
+        }
+
+        if (companyInfo.getPrice() != 0.0) {
+            mCompanyPriceTextView.setText(new StringBuilder().append("Price: ").append(companyInfo.getPrice()));
+        } else {
+            mCompanyPriceTextView.setText("No information");
+        }
+
+    }
+
+    private void displayErrorScreen() {
+        mContainer.setVisibility(View.GONE);
+        mContainerForErrors.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mCompanyInfoViewModel.setHasNotRetrieveError();
+        super.onDestroy();
     }
 }

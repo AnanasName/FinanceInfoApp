@@ -36,7 +36,7 @@ public class CompanyApiClient {
     private RetrieveCompanyRunnable mRetrieveCompanyRunnable;
     private MutableLiveData<Boolean> updating;
     private MutableLiveData<CompanyInfo> mCompany;
-    private MutableLiveData<Boolean> mCompanyRequestTimeout = new MutableLiveData<>();
+    private MutableLiveData<Boolean> retrieveError = new MutableLiveData<>();
 
     public static CompanyApiClient getInstance() {
         if (instance == null) {
@@ -63,8 +63,12 @@ public class CompanyApiClient {
         return updating;
     }
 
-    public LiveData<Boolean> isCompanyRequestTimeout(){
-        return mCompanyRequestTimeout;
+    public LiveData<Boolean> hasRetrieveError(){
+        return retrieveError;
+    }
+
+    public void setHasNotRetrieveError(){
+        retrieveError.postValue(false);
     }
 
     public void searchCompaniesApi(String symbols) {
@@ -92,7 +96,9 @@ public class CompanyApiClient {
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
             public void run() {
-                mCompanyRequestTimeout.postValue(true);
+                if (mCompany == null){
+                    retrieveError.postValue(true);
+                }
                 handler.cancel(true);
             }
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
@@ -180,6 +186,7 @@ public class CompanyApiClient {
         public RetrieveCompanyRunnable(String symbols) {
             this.symbols = symbols;
             cancelRequest = false;
+            retrieveError.postValue(false);
         }
 
         @Override
@@ -202,22 +209,20 @@ public class CompanyApiClient {
                     companyInfo.setDividendPerShare(response.body().getDividendPerShare());
                     companyInfo.setDividendDate(response.body().getDividendDate());
                     companyInfo.setSector(response.body().getSector());
-                    //TODO Добавить цену
 
                     updating.postValue(false);
-                    mCompanyRequestTimeout.postValue(false);
                     mCompany.postValue(companyInfo);
                 } else {
                     String error = response.errorBody().string();
                     Log.e(TAG, "run:");
                     updating.postValue(false);
-                    mCompanyRequestTimeout.postValue(false);
+                    retrieveError.postValue(true);
                     mCompany.postValue(null);
                 }
             } catch (IOException io) {
                 io.printStackTrace();
                 updating.postValue(false);
-                mCompanyRequestTimeout.postValue(false);
+                retrieveError.postValue(true);
                 mCompany.postValue(null);
             }
         }

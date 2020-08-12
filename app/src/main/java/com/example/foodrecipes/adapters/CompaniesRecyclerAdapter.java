@@ -34,8 +34,8 @@ public class CompaniesRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         RequestOptions requestOptions = new RequestOptions()
-                .error(R.drawable.ic_launcher_background)
-                .placeholder(R.drawable.ic_launcher_background);
+                .error(R.drawable.ic_baseline_maximize_24)
+                .placeholder(R.drawable.ic_baseline_maximize_24);
 
         Glide.with(holder.itemView.getContext())
                 .setDefaultRequestOptions(requestOptions)

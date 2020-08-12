@@ -36,15 +36,19 @@ public class CompanyRepository {
         return mCompanyApiClient.getCompany();
     }
 
-    public LiveData<Boolean> isCompanyRequestTimeout(){
-        return mCompanyApiClient.isCompanyRequestTimeout();
-    }
-
     public void getCompanyInfo(String symbol){
         mCompanyApiClient.getCompanyInfo(symbol);
     }
 
     public LiveData<Boolean> isUpdating() {
         return mCompanyApiClient.isUpdating();
+    }
+
+    public LiveData<Boolean> hasRetrieveError(){
+        return mCompanyApiClient.hasRetrieveError();
+    }
+
+    public void setHasNotRetrieveError(){
+        mCompanyApiClient.setHasNotRetrieveError();
     }
 }

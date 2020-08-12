@@ -21,6 +21,7 @@ import com.example.foodrecipes.util.Testing;
 import com.example.foodrecipes.util.VerticalSpacingItemDecorator;
 import com.example.foodrecipes.viewmodels.CompanyListViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyListActivity extends BaseActivity implements OnCompanyListener {
@@ -43,6 +44,7 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
         initRecyclerView();
         subscribeObservers();
         initSearchView();
+        setStartData();
     }
 
     private void subscribeObservers(){
@@ -109,5 +111,60 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
 
     public void printData(View view) {
         Log.d("Test data", mCompanyListViewModel.getCompanies().getValue().get(1).getName());
+    }
+
+    private void setStartData() {
+        List<CompanyInfo> companyInfos = new ArrayList<>();
+
+        CompanyInfo companyInfo1 = new CompanyInfo();
+        companyInfo1.setName("Apple");
+        companyInfo1.setSymbol("AAPL");
+        companyInfo1.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/AAPL.png");
+        companyInfos.add(companyInfo1);
+
+        CompanyInfo companyInfo2 = new CompanyInfo();
+        companyInfo2.setName("Microsoft");
+        companyInfo2.setSymbol("MSFT");
+        companyInfo2.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/MSFT.png");
+        companyInfos.add(companyInfo2);
+
+        CompanyInfo companyInfo3 = new CompanyInfo();
+        companyInfo3.setName("Coca-Cola");
+        companyInfo3.setSymbol("KO");
+        companyInfo3.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/KO.png");
+        companyInfos.add(companyInfo3);
+
+        CompanyInfo companyInfo4 = new CompanyInfo();
+        companyInfo4.setName("Tesla");
+        companyInfo4.setSymbol("TSLA");
+        companyInfo4.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/TSLA.png");
+        companyInfos.add(companyInfo4);
+
+        CompanyInfo companyInfo5 = new CompanyInfo();
+        companyInfo5.setName("Nike");
+        companyInfo5.setSymbol("NKE");
+        companyInfo5.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/NKE.png");
+        companyInfos.add(companyInfo5);
+
+        CompanyInfo companyInfo6 = new CompanyInfo();
+        companyInfo6.setName("Amazon.com Inc");
+        companyInfo6.setSymbol("AMZN");
+        companyInfo6.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/AMZN.png");
+        companyInfos.add(companyInfo6);
+
+        CompanyInfo companyInfo7 = new CompanyInfo();
+        companyInfo7.setName("Facebook Inc");
+        companyInfo7.setSymbol("FB");
+        companyInfo7.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/FB.png");
+        companyInfos.add(companyInfo7);
+
+        CompanyInfo companyInfo8 = new CompanyInfo();
+        companyInfo8.setName("Walt Disney Company");
+        companyInfo8.setSymbol("FB");
+        companyInfo8.setUrlOfSymbol("https://storage.googleapis.com/iexcloud-hl37opg/api/logos/DIS.png");
+        companyInfos.add(companyInfo8);
+
+        mAdapter.setCompanies(companyInfos);
+        mAdapter.notifyDataSetChanged();
     }
 }
