@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -45,6 +48,8 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
         subscribeObservers();
         initSearchView();
         setStartData();
+        setSupportActionBar(findViewById(R.id.toolbar));
+
     }
 
     private void subscribeObservers(){
@@ -166,5 +171,21 @@ public class CompanyListActivity extends BaseActivity implements OnCompanyListen
 
         mAdapter.setCompanies(companyInfos);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId() == R.id.action_back_to_main_page){
+            setStartData();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.company_search_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
