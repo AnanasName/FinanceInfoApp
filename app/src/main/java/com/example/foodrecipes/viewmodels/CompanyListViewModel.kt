@@ -30,7 +30,8 @@ constructor(
     @ExperimentalCoroutinesApi
     fun searchCompanies(symbol: String){
         viewModelScope.launch {
-            Log.d(DEBUG, "searchCompanies viewModel")
+
+            //_companies.value = repository.getCompanies(symbol).asLiveData().value
             repository.getCompanies(symbol).onEach { resource ->
                 _companies.value = resource
             }.launchIn(viewModelScope)

@@ -82,7 +82,6 @@ class CompanyListActivity : BaseActivity(), OnCompanyListener {
 
     @ExperimentalCoroutinesApi
     private fun searchCompaniesApi(symbols: String) {
-        Log.d(DEBUG, "searchCompanies")
         viewModel.searchCompanies(symbols)
     }
 

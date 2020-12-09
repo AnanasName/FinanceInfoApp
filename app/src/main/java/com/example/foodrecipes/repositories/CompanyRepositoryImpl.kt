@@ -19,25 +19,25 @@ class CompanyRepositoryImpl constructor(
         private val infoNetworkDataSource: InfoNetworkDataSourceImpl
 ) : CompanyRepository {
 
-    init {
-        infoNetworkDataSource.companies.observeForever { newCompanies ->
-
-            if (newCompanies?.data != null) {
-                if (newCompanies.status == Resource.Status.SUCCESS) {
-                    Log.d(DEBUG, newCompanies.data.get(0).urlOfSymbol)
-                    persistFetchedCompanies(newCompanies.data)
-                }
-            }
-        }
-
-        infoNetworkDataSource.company.observeForever { newCompany ->
-            if (newCompany?.data != null) {
-                if (newCompany.status == Resource.Status.SUCCESS) {
-                    persistFetchedCompany(newCompany.data)
-                }
-            }
-        }
-    }
+//    init {
+//        infoNetworkDataSource.companies.observeForever { newCompanies ->
+//
+//            if (newCompanies?.data != null) {
+//                if (newCompanies.status == Resource.Status.SUCCESS) {
+//                    Log.d(DEBUG, newCompanies.data.get(0).urlOfSymbol)
+//                    persistFetchedCompanies(newCompanies.data)
+//                }
+//            }
+//        }
+//
+//        infoNetworkDataSource.company.observeForever { newCompany ->
+//            if (newCompany?.data != null) {
+//                if (newCompany.status == Resource.Status.SUCCESS) {
+//                    persistFetchedCompany(newCompany.data)
+//                }
+//            }
+//        }
+//    }
 
     private fun persistFetchedCompany(newCompany: CompanyInfo) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -49,7 +49,6 @@ class CompanyRepositoryImpl constructor(
     private fun persistFetchedCompanies(newCompanies: List<CompanyInfo>) {
         GlobalScope.launch(Dispatchers.IO) {
             companyDao.insertCompanies(newCompanies)
-            Log.d(DEBUG, "SUCESS")
         }
 
     }
@@ -58,18 +57,22 @@ class CompanyRepositoryImpl constructor(
     override suspend fun getCompanies(symbol: String): Flow<Resource<List<CompanyInfo>>> = flow {
         emit(Resource.loading<List<CompanyInfo>>(null))
         infoNetworkDataSource.searchCompanies(symbol)
-        if(infoNetworkDataSource.companies.value != null){
-            return
-        }
-        Log.d(DEBUG, "searchCompanies repository")
-        val data = companyDao.searchCompanies(symbol).value
-        Log.d(DEBUG, "Success 2")
-        if (data != null) {
-            val success = Resource.success(data)
+        val networkData = infoNetworkDataSource.companies.value
+        if (networkData?.data != null) {
+            val success = Resource.success(networkData.data)
+            companyDao.insertCompanies(networkData.data)
             emit(success)
         } else {
-            emit(Resource.error<List<CompanyInfo>>("Error occurred", null))
+            try{
+            val databaseData = companyDao.searchCompanies(symbol)
+                val success = Resource.success(databaseData)
+                emit(success)
+            } catch (e: Exception) {
+                emit(Resource.error<List<CompanyInfo>>("Error occurred", null))
+            }
         }
+
+
     }
 
 

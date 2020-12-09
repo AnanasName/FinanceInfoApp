@@ -10,17 +10,17 @@ import com.example.foodrecipes.model.CompanyInfo
 interface CompanyDao {
 
     @Insert(onConflict = REPLACE)
-    fun insertCompanies(companyInfos: List<CompanyInfo>)
+    suspend fun insertCompanies(companyInfos: List<CompanyInfo>)
 
     @Insert(onConflict = REPLACE)
-    fun upsertCompanyInfo(companyInfo: CompanyInfo)
+    suspend fun upsertCompanyInfo(companyInfo: CompanyInfo)
 
     @Query("SELECT * FROM companyInfos WHERE symbol " +
             "LIKE '%' || :symbol || '%' OR name LIKE '%' || :symbol || '%' ORDER BY price")
-    fun searchCompanies(symbol: String): LiveData<List<CompanyInfo>>
+    suspend fun searchCompanies(symbol: String): List<CompanyInfo>
 
     @Query("SELECT * FROM companyInfos WHERE symbol = :symbol")
-    fun getCompanyInfo(symbol: String): CompanyInfo
+    suspend fun getCompanyInfo(symbol: String): CompanyInfo
 
 
 }

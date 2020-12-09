@@ -1,0 +1,94 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "014418460eff041cbbfa9638cbfc1f14",
+    "entities": [
+      {
+        "tableName": "companyInfos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `assetType` TEXT, `name` TEXT, `description` TEXT, `sector` TEXT, `country` TEXT, `analystTargetPrice` TEXT, `dividendPerShare` TEXT, `dividendDate` TEXT, `urlOfSymbol` TEXT, `price` REAL NOT NULL, PRIMARY KEY(`symbol`))",
+        "fields": [
+          {
+            "fieldPath": "Symbol",
+            "columnName": "symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "AssetType",
+            "columnName": "assetType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Sector",
+            "columnName": "sector",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "Country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "AnalystTargetPrice",
+            "columnName": "analystTargetPrice",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "DividendPerShare",
+            "columnName": "dividendPerShare",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "DividendDate",
+            "columnName": "dividendDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "urlOfSymbol",
+            "columnName": "urlOfSymbol",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "symbol"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '014418460eff041cbbfa9638cbfc1f14')"
+    ]
+  }
+}

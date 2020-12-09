@@ -1,7 +1,9 @@
 package com.example.foodrecipes.requests
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.foodrecipes.DEBUG
 import com.example.foodrecipes.model.CompanyInfo
 import com.example.foodrecipes.util.Constants
 import com.example.foodrecipes.util.Resource
@@ -73,9 +75,9 @@ class InfoNetworkDataSourceImpl
                     ?.await()
 
             if (fetchedCompanies != null) {
-                val companyInfo = CompanyInfo()
                 val companiesList = mutableListOf<CompanyInfo>()
                 for (companySearchObject in fetchedCompanies.labels){
+                    val companyInfo = CompanyInfo()
                     companyInfo.name = companySearchObject.name
                     companyInfo.symbol = companySearchObject.symbol
                     val urlOfImage = fetchImageUrl(companySearchObject.symbol)
