@@ -58,8 +58,10 @@ class CompanyRepositoryImpl constructor(
     override suspend fun getCompanies(symbol: String): Flow<Resource<List<CompanyInfo>>> = flow {
         emit(Resource.loading<List<CompanyInfo>>(null))
         infoNetworkDataSource.searchCompanies(symbol)
+        if(infoNetworkDataSource.companies.value != null){
+            return
+        }
         Log.d(DEBUG, "searchCompanies repository")
-
         val data = companyDao.searchCompanies(symbol).value
         Log.d(DEBUG, "Success 2")
         if (data != null) {
