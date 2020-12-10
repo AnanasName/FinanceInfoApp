@@ -86,9 +86,9 @@ class CompanyListActivity : BaseActivity(), OnCompanyListener {
     }
 
     override fun onCompanyClick(position: Int) {
-//        val intent = Intent(this, CompanyInfoActivity::class.java)
-//        intent.putExtra("companyInfo", mAdapter!!.getSelectedCompany(position))
-//        startActivity(intent)
+        val intent = Intent(this, CompanyInfoActivity::class.java)
+        intent.putExtra("companyInfo", mAdapter!!.getSelectedCompany(position))
+        startActivity(intent)
     }
 
     @ExperimentalCoroutinesApi

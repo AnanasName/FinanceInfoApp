@@ -5,8 +5,8 @@ import com.example.foodrecipes.model.CompanyInfo
 import com.example.foodrecipes.util.Resource
 
 interface InfoNetworkDataSource {
-    val companies: LiveData<Resource<List<CompanyInfo>>>
-    val company: LiveData<Resource<CompanyInfo>>
+    val companies: Resource<List<CompanyInfo>>
+    val company: Resource<CompanyInfo>
 
 
     suspend fun fetchImageUrl(

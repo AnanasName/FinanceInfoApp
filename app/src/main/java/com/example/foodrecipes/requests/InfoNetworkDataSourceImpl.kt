@@ -13,12 +13,12 @@ class InfoNetworkDataSourceImpl
     constructor(private val serviceGenerator: ServiceGenerator)
     : InfoNetworkDataSource {
 
-    private val _companies = MutableLiveData<Resource<List<CompanyInfo>>>()
-    override val companies: LiveData<Resource<List<CompanyInfo>>>
+    private var _companies = Resource<List<CompanyInfo>>(Resource.Status.LOADING, null, null)
+    override val companies: Resource<List<CompanyInfo>>
         get() = _companies
 
-    private val _company = MutableLiveData<Resource<CompanyInfo>>()
-    override val company: LiveData<Resource<CompanyInfo>>
+    private var _company = Resource<CompanyInfo>(Resource.Status.LOADING, null, null)
+    override val company: Resource<CompanyInfo>
         get() = _company
 
     override suspend fun fetchImageUrl(symbol: String): String? {
@@ -26,7 +26,7 @@ class InfoNetworkDataSourceImpl
            val imageUrl = serviceGenerator.imageApi.getImageUrl(symbol, Constants.API_KEY_FOR_IMAGE)?.await()
             return imageUrl?.url
         }catch (e: Exception){
-            _companies.value = (Resource.error(e.message.toString(), null))
+            _companies = (Resource.error(e.message.toString(), null))
             return null
         }
     }
@@ -57,14 +57,14 @@ class InfoNetworkDataSourceImpl
                         companyInfo.price = 0.0f
                     }
                 }catch (e: Exception){
-                    _company.value = Resource.error(e.message.toString(), null)
+                    _company = Resource.error(e.message.toString(), null)
                 }
-                _company.value = Resource.success(companyInfo)
+                _company = Resource.success(companyInfo)
             } else {
-                _company.value = Resource.error("Error occurred", null)
+                _company = Resource.error("Error occurred", null)
             }
         }catch (e: Exception){
-            _company.value = Resource.error(e.message.toString(), null)
+            _company = Resource.error(e.message.toString(), null)
         }
     }
 
@@ -84,17 +84,17 @@ class InfoNetworkDataSourceImpl
                     if (urlOfImage != null){
                         companyInfo.urlOfSymbol = urlOfImage
                     }else{
-                        _companies.value = Resource.error("Error occurred", null)
+                        _companies = Resource.error("Error occurred", null)
                     }
                     companiesList.add(companyInfo)
                 }
-                _companies.value = Resource.success(companiesList)
+                _companies = Resource.success(companiesList)
             }else{
-                _companies.value = Resource.error("Error occurred", null)
+                _companies = Resource.error("Error occurred", null)
             }
 
         }catch (e: Exception){
-            _companies.value = Resource.error(e.message.toString(), null)
+            _companies = Resource.error(e.message.toString(), null)
         }
     }
 }
