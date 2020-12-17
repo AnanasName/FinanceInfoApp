@@ -18,7 +18,7 @@ import java.text.DateFormatSymbols
 class CompanyListViewModel
 @ViewModelInject
 constructor(
-        private val repository: CompanyRepositoryImpl,
+        private val repository: CompanyRepository,
         @Assisted private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 

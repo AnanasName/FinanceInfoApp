@@ -15,7 +15,7 @@ class DataSourceModule {
 
     @Singleton
     @Provides
-    fun provideDataSource(serviceGenerator: ServiceGenerator): InfoNetworkDataSourceImpl{
+    fun provideDataSource(serviceGenerator: ServiceGenerator): InfoNetworkDataSource{
         return InfoNetworkDataSourceImpl(serviceGenerator)
     }
 }

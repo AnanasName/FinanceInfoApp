@@ -4,6 +4,7 @@ import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.foodrecipes.model.CompanyInfo
+import com.example.foodrecipes.repositories.CompanyRepository
 import com.example.foodrecipes.repositories.CompanyRepositoryImpl
 import com.example.foodrecipes.util.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 class CompanyInfoViewModel
 @ViewModelInject
 constructor(
-        private val repository: CompanyRepositoryImpl,
+        private val repository: CompanyRepository,
         @Assisted private val savedStateHandle: SavedStateHandle
 ): ViewModel(){
 

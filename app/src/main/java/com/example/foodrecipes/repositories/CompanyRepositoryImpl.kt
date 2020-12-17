@@ -2,6 +2,7 @@ package com.example.foodrecipes.repositories
 
 import com.example.foodrecipes.model.CompanyInfo
 import com.example.foodrecipes.persistence.CompanyDao
+import com.example.foodrecipes.requests.InfoNetworkDataSource
 import com.example.foodrecipes.requests.InfoNetworkDataSourceImpl
 import com.example.foodrecipes.util.Resource
 import kotlinx.coroutines.*
@@ -11,7 +12,7 @@ import java.lang.Exception
 
 class CompanyRepositoryImpl constructor(
         private val companyDao: CompanyDao,
-        private val infoNetworkDataSource: InfoNetworkDataSourceImpl
+        private val infoNetworkDataSource: InfoNetworkDataSource
 ) : CompanyRepository {
 
     override suspend fun getCompanies(symbol: String): Flow<Resource<List<CompanyInfo>>> = flow {

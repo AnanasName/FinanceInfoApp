@@ -19,8 +19,8 @@ class RepositoryModule {
     @Provides
     fun provideCompanyRepository(
         companyDao: CompanyDao,
-        infoNetworkDataSource: InfoNetworkDataSourceImpl
-    ): CompanyRepositoryImpl = CompanyRepositoryImpl(
+        infoNetworkDataSource: InfoNetworkDataSource
+    ): CompanyRepository = CompanyRepositoryImpl(
         companyDao,
         infoNetworkDataSource
     )
